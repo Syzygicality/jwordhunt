@@ -11,6 +11,9 @@ pwd_context = CryptContext(
     deprecated="auto"
 )
 
+class MessageCreate(BaseModel):
+    content: str
+
 class Message(BaseModel):
     role: str
     content: str
@@ -45,3 +48,11 @@ class User(Document):
 
     def verify_password(self, password: str) -> bool:
         return pwd_context.verify(password, self.hashed_password)
+    
+class UserPublic(BaseModel):
+    email: EmailStr
+    hashed_password: str
+    name: str
+    info: Info | None = None
+    chat_preferences: Preference | None = None
+    chats: List[Chat] | None = None
