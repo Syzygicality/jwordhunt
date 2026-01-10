@@ -3,6 +3,12 @@ from app.enums import Country, Personality, TherapyStyle, Tone, SupportNeeded, G
 from beanie import Document
 from pydantic import EmailStr, BaseModel
 from typing import Dict, Any
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(
+    schemes=["bcrypt"], 
+    deprecated="auto"
+)
 
 class Preference(BaseModel):
     personality: list[Personality]
@@ -22,3 +28,9 @@ class User(Document):
     name: str
     info: Info | None = None
     preferences: Preference | None = None
+
+    def hash_password(cls, password: str) -> str:
+        return pwd_context.hash(password)
+
+    def verify_password(self, password: str) -> bool:
+        return pwd_context.verify(password, self.hashed_password)
