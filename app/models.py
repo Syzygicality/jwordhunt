@@ -1,19 +1,27 @@
 from app.enums import Country, Personality, TherapyStyle, Tone, SupportNeeded, Gender
 
 from beanie import Document
-from pydantic import EmailStr, BaseModel
-from typing import Dict, Any
+from pydantic import EmailStr, BaseModel, Field
+from typing import Dict, Any, List
 from passlib.context import CryptContext
+from uuid import UUID, uuid4
 
 pwd_context = CryptContext(
     schemes=["bcrypt"], 
     deprecated="auto"
 )
 
+class Message(BaseModel):
+    role: str
+    content: str
+
+class Chat(BaseModel):
+    messages: List[Message]
+
 class Preference(BaseModel):
     personality: list[Personality]
     therapy_style: TherapyStyle
-    tone: list[Tone]
+    tone: List[Tone]
     support_needed: SupportNeeded
 
 class Info(BaseModel):
@@ -27,8 +35,11 @@ class User(Document):
     hashed_password: str
     name: str
     info: Info | None = None
-    preferences: Preference | None = None
+    chat_preferences: Preference | None = None
+    chats: List[Chat] | None = None
 
+
+    @classmethod
     def hash_password(cls, password: str) -> str:
         return pwd_context.hash(password)
 

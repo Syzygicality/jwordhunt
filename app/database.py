@@ -7,14 +7,6 @@ from os import environ
 load_dotenv()
 
 def getenv(config: str) -> str:
-    """
-    Validates whether or not database env values exist in .env. If not, throws a value error.
-
-    :param config: Variable in .env
-    :type config: str
-    :return: Value of variable in .env
-    :rtype: str
-    """
     value = environ.get(config)
     if not value:
         raise ValueError(f"{config} is missing from .env.")
@@ -28,7 +20,6 @@ MONGO_URL = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@{DB_LOCATION}/?appName=Delta
 DB_NAME = "jwordhunt"
 
 client: AsyncIOMotorClient | None = None
-db = None
 
 def connect_to_mongo():
     global client, db
@@ -38,7 +29,7 @@ def connect_to_mongo():
         tls=True,
         tlsCAFile=certifi.where(),
     )
-    db = client[DB_NAME]
+    return client
 
 def close_mongo_connection():
     global client

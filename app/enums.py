@@ -1,9 +1,10 @@
 from enum import StrEnum
 from pycountry import countries
 
-class Country(StrEnum):
-    for country in countries:
-        vars()[country.alpha_2] = country.name
+countries_dict = {c.alpha_2: c.name for c in countries}
+
+# Dynamically create StrEnum
+Country = StrEnum("Country", countries_dict)
 
 class Personality(StrEnum):
     empathetic = "empathetic"

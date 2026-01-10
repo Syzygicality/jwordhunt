@@ -4,7 +4,7 @@ from app.auth import create_access_token
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["Registration and Login"])
 
 @router.post("/register")
 async def register(name: str, email: str, password: str):
@@ -22,3 +22,4 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     token = create_access_token({"user_id": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
+
