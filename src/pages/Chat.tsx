@@ -20,7 +20,6 @@ interface APIResponse {
 }
 
 const Chat: React.FC = () => {
-    
     const [messages, setMessages] = useState<Message[]>([
         { role: 'assistant', content: 'What\'s on your mind today?' }
     ]);
@@ -48,9 +47,15 @@ const Chat: React.FC = () => {
             const response = await fetch();
 
             const data: APIResponse = await response.json();
-            const assistantMessage = data.content.map(item => (item.type === 'text' ? item.text : '')).filter(Boolean).join('\n');
+            const assistantMessage = data.content
+                .map(item => (item.type === 'text' ? item.text : ''))
+                .filter(Boolean)
+                .join('\n');
 
-            setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
+            setMessages(prev => [
+                ...prev,
+                { role: 'assistant', content: assistantMessage },
+            ]);
 
         } catch (error) {
             console.error("Error:", error);

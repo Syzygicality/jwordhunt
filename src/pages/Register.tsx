@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { CountryDropdown } from "@/components/ui/country-dropdown";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface QuestionOption{
     value: string;
@@ -33,9 +34,7 @@ function Register() {
     const [age, setAge] = React.useState("");
     const [country, setCountry] = React.useState("");
     const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
-    const [questionAnswers, setQuestionAnswers] = React.useState<
-        Record<number, string | string[]>
-    >({});
+    const [questionAnswers, setQuestionAnswers] = React.useState<Record<number, string | string[]>>({});
 
     // Questions state
     const [questions, setQuestions] = React.useState<Question[]>([]);
@@ -44,16 +43,18 @@ function Register() {
         null
     );
 
+    const navigate = useNavigate();
+
     // Helper function to format labels
     const formatLabel = (value: string): string => {
         // Handle special cases
         if (value === "non-binary") return "Non-binary";
         if (value === "prefer not to say") return "Prefer Not To Say";
-        
+
         // TherapyStyle values are already formatted, return as-is
         const therapyStyles = ["Cognitive Behavioral", "Humanistic", "Psychodynamic", "Problem Solving"];
         if (therapyStyles.includes(value)) return value;
-        
+
         // Capitalize first letter of each word
         return value
             .split(/[\s-]+/)
@@ -68,7 +69,7 @@ function Register() {
         try {
             //TODO: Change URL for backend deployment
             const baseUrl = "http://localhost:8000";
-            
+
             // Fetch all enum endpoints in parallel
             const [personalityRes, therapyStyleRes, toneRes, supportNeededRes, genderRes] = await Promise.all([
                 fetch(`${baseUrl}/choices/personality`, {
@@ -212,8 +213,19 @@ function Register() {
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             } else {
                 // All questions answered - handle completion
-                console.log({ name, age, country, answers: questionAnswers });
+                const userInfo = {
+                    name,
+                    age,
+                    country,
+                    answers: questionAnswers,
+                };
+                console.log(userInfo);
                 // TODO: Send answers to backend template
+
+                // go to chat page
+                navigate("/chat", {
+                    state: userInfo
+                });
             }
         }
     };
@@ -378,7 +390,7 @@ function Register() {
                                 <FieldDescription className='text-center'>
                                     Your answers help us understand you better
                                 </FieldDescription>
-                                
+
                                 <FieldGroup className="py-16 flex flex-col gap-4">
                                     {currentQuestion.type === "text" ? (
                                         <Field className='w-full'>
@@ -402,7 +414,7 @@ function Register() {
                                                 const isSelected = currentQuestion.type === "multi-select"
                                                     ? Array.isArray(currentAnswer) && currentAnswer.includes(option.value)
                                                     : currentAnswer === option.value;
-                                                
+
                                                 return (
                                                     <Button
                                                         key={option.value}
@@ -417,10 +429,10 @@ function Register() {
                                         </div>
                                     ) : null}
                                 </FieldGroup>
-                                
+
                                 <div className="flex gap-4 justify-center">
                                     {currentQuestionIndex > 0 && (
-                                        <Button 
+                                        <Button
                                             variant="outline"
                                             className="text-lg"
                                             onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
@@ -428,11 +440,11 @@ function Register() {
                                             Back
                                         </Button>
                                     )}
-                                    <Button 
+                                    <Button
                                         className="text-lg"
                                         onClick={handleQuestionContinue}
                                         disabled={
-                                            !currentAnswer || 
+                                            !currentAnswer ||
                                             (typeof currentAnswer === 'string' && !currentAnswer.trim()) ||
                                             (Array.isArray(currentAnswer) && currentAnswer.length === 0)
                                         }
