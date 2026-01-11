@@ -29,7 +29,8 @@ def connect_to_mongo():
         tls=True,
         tlsCAFile=certifi.where(),
     )
-    return client
+    db = client[DB_NAME]
+    return client, db
 
 def close_mongo_connection():
     global client

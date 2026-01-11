@@ -8,8 +8,8 @@ from beanie import init_beanie
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    client = connect_to_mongo()
-    await init_beanie(database=client.jwordhunt, document_models=[User])
+    client, db = connect_to_mongo()
+    await init_beanie(database=db, document_models=[User])
     yield
     close_mongo_connection()
 
