@@ -28,6 +28,7 @@ def connect_to_mongo():
         server_api=ServerApi("1"),
         tls=True,
         tlsCAFile=certifi.where(),
+        tlsVersion="TLS1_2",
     )
     db = client[DB_NAME]
     return client, db
