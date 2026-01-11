@@ -31,7 +31,7 @@ class Info(BaseModel):
     age: int
     gender: Gender
     country: Country
-    memory: Dict[str, Any] = {}
+    memory: Dict[str, Any] = Field(default_factory=dict)
 
 class User(Document):
     email: EmailStr
@@ -39,7 +39,7 @@ class User(Document):
     name: str
     info: Info | None = None
     chat_preferences: Preference | None = None
-    chats: List[Chat] | None = None
+    chats: List[Chat] = Field(default_factory=list)
 
 
     @classmethod
