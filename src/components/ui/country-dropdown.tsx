@@ -82,9 +82,6 @@ const CountryDropdownComponent = (
                 // Reset selected country if defaultValue is not found
                 setSelectedCountry(undefined);
             }
-        } else {
-            // Reset selected country if defaultValue is undefined or null
-            setSelectedCountry(undefined);
         }
     }, [defaultValue, options]);
 

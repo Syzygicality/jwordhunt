@@ -306,9 +306,7 @@ function Register() {
                             <Field>
                                 <FieldLabel className="text-md" htmlFor='country'>Where are you from?</FieldLabel>
                                 <CountryDropdown
-                                    placeholder="Select country"
-                                    defaultValue="Canada"
-                                    onChange={(country) => {setCountry(country.alpha3);}}
+                                    onChange={(country) => {setCountry(country.name);}}
                                 />
                                     {/* <Input
                                     id='country'
